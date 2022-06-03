@@ -1,0 +1,76 @@
+version: '3.7'
+
+services:
+  backend:
+    container_name: backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: laravel_vue
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    working_dir: /var/www
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/:/var/www
+    networks:
+      - app
+
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    tty: true 
+    ports:  
+      - '8080:8080'
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - backend
+    networks:
+      - app
+
+  db:
+    image: mysql:8
+    container_name: db
+    restart: unless-stopped
+    # command: --lower_case_table_names=1
+    tty: true 
+    ports:
+      - 3306:3306
+    volumes:
+      - ./backend/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_react
+    networks:
+      - app
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    depends_on:
+      - db
+    ports:
+      - 8001:80
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
