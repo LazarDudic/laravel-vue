@@ -17,10 +17,24 @@ services:
     working_dir: /var/www
     depends_on:
       - db
-    ports:
-      - 8000:8000
     volumes:
       - ./backend/:/var/www
+      # - /var/www/vendor
+    networks:
+      - app
+
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    build: 
+      context: .
+      dockerfile: nginx.dockerfile
+    depends_on:
+      - backend
+    ports:
+      - 8000:80
+    volumes:
+      - ./backend:/var/www
     networks:
       - app
 
@@ -36,7 +50,7 @@ services:
       - '8080:8080'
     volumes:
       - ./frontend:/app
-      # - /app/node_modules
+      - /app/node_modules
     depends_on:
       - backend
     networks:
@@ -53,25 +67,25 @@ services:
       - ./backend/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel_react
+      MYSQL_DATABASE: laravel_vue
     networks:
       - app
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    restart: unless-stopped
-    links:
-      - db
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-    depends_on:
-      - db
-    ports:
-      - 8001:80
-    networks:
-      - app
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   restart: unless-stopped
+  #   links:
+  #     - db
+  #   environment:
+  #     PMA_HOST: db
+  #     PMA_PORT: 3306
+  #     PMA_ARBITRARY: 1
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 8001:80
+  #   networks:
+  #     - app
 
 networks:
   app:

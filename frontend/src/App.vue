@@ -1,11 +1,31 @@
 <template>
     <nav>
-        <router-link to="/">Home</router-link> |
-        <router-link to="/login">Login</router-link> |
-        <router-link to="/register">Register</router-link>
+        <router-link to="/">Home</router-link> | 
+        <span v-if="!authUser.name">
+            <router-link  to="/login">Login</router-link> |
+            <router-link  to="/register">Register</router-link> 
+        </span>
+        <span v-if="authUser.name">
+            <a> {{ authUser.name }} |</a>
+            <a href="#" @click="authStore.logout()"> Logout</a> 
+        </span>
     </nav>
     <router-view />
 </template>
+
+<script>
+import {storeToRefs} from 'pinia'
+import { useAuthStore } from '@/stores/auth.store';
+
+export default {
+    name: 'App',
+    setup() {
+        var authStore = useAuthStore();
+        const {authUser} = storeToRefs(authStore);
+        return {authUser, authStore}
+    },
+}
+</script>
 
 <style>
 #app {
