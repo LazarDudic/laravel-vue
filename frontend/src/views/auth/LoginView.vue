@@ -27,8 +27,10 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
-import { useAuthStore } from '@/stores/auth.store'
+import { reactive } from 'vue'
+import { useAuthStore, useErrorStore } from '@/stores'
+import {storeToRefs} from 'pinia'
+
 
 export default {
     name: 'LoginView',
@@ -38,15 +40,13 @@ export default {
             password: ""
         })
 
-        const errors = ref([])
-    
+        const errorStore = useErrorStore()   
+        const {errors} = storeToRefs(errorStore);
+ 
         function submitLogin() {
-            errors.value = []
+            errorStore.$reset()
             const authStore = useAuthStore();
             authStore.login(input)
-                .catch(error => {
-                    errors.value = error.response.data.errors
-                });
         }
 
         return { input, submitLogin, errors}

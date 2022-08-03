@@ -53,8 +53,9 @@
 </template>
 
 <script>
-import {reactive, ref } from "vue"
-import { useAuthStore } from '@/stores/auth.store'
+import { reactive } from "vue";
+import { useAuthStore, useErrorStore } from "@/stores";
+import {storeToRefs} from 'pinia'
 
 
 export default {
@@ -64,19 +65,18 @@ export default {
       name: "",
       email: "",
       password: "",
-    })
+    });
 
-    const errors = ref([]);
+    const errorStore = useErrorStore();
+    const { errors } = storeToRefs(errorStore);
+
     function submitRegister() {
-      errors.value = [];
+      errorStore.$reset();
       const authStore = useAuthStore();
-      authStore.register(input)
-        .catch((error) => {
-            errors.value = error.response.data.errors
-        });
+      authStore.register(input);
     }
 
-    return {input, submitRegister, errors };
+    return { input, submitRegister, errors };
   },
 };
 </script>

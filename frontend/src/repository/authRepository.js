@@ -6,5 +6,8 @@ export default {
   },
   register(payload) {
     return Client.post(`/register`, payload);
+  },
+  logout() {
+    return Client.post(`/logout`);
   }
 };

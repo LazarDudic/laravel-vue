@@ -7,16 +7,22 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(inputData) {
             const res = await AuthRepository.login(inputData)
-            this.setAuthUser(res.data)
-            router.push({name: 'home'});
+            if (res && res.status === 200) {
+                this.setAuthUser(res.data)
+                router.push({name: 'home'});
+            }
         },
         async register(inputData) {
             const res = await AuthRepository.register(inputData)
-            this.setAuthUser(res.data)
-            router.push({name: 'home'});
+            if (res && res.status === 200) {
+                this.setAuthUser(res.data)
+                router.push({name: 'home'});
+            }
         },
-        logout() {
+        async logout() {
             this.authUser = [];
+            var res = await AuthRepository.logout()
+            console.log(res)
             localStorage.removeItem('auth_user');
             localStorage.removeItem('auth_token');
             router.push({name: 'login'});
