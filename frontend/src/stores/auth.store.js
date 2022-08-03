@@ -22,7 +22,6 @@ export const useAuthStore = defineStore('auth', {
         async logout() {
             this.authUser = [];
             var res = await AuthRepository.logout()
-            console.log(res)
             localStorage.removeItem('auth_user');
             localStorage.removeItem('auth_token');
             router.push({name: 'login'});

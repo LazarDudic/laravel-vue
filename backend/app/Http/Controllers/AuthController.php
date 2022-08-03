@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Lcobucci\JWT\Token\Parser;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    private $tokenType = 'Bearer';
+
     public function login(Request $request)
     {
         $request->validate([
@@ -20,16 +23,15 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Invalid login details'
-            ], 401);
+            ], 400);
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->accessToken;
 
         return response()->json([
-            'auth_token' => $token,
-            'token_type' => 'Bearer',
+            'auth_token' => $this->tokenType.' '.$token,
             'user' => $user
         ]);
     }
@@ -48,22 +50,19 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->accessToken;
 
         return response()->json([
-            'auth_token' => $token,
-            'token_type' => 'Bearer',
+            'auth_token' => $this->tokenType.' '.$token,
             'user' => $user
         ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        return Auth::user();
-
         $user = Auth::user()->token();
         $user->revoke();
 
-        response()->json(['success' => 'success'], 200);
+        return response()->json(['success' => 'success'], 200);
     }
 }

@@ -1,5 +1,4 @@
 import axios from "axios";
-import {errorHandler} from '@/helpers/helper.js'
 import { useErrorStore } from '@/stores'
 
 const baseURL = process.env.VUE_APP_API_URL
@@ -15,7 +14,7 @@ Client.interceptors.response.use(
 
 Client.interceptors.request.use(function (config) {
     config.headers.common = {
-        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        Authorization: `${localStorage.getItem("auth_token")}`,
         "Content-Type": "application/json",
         Accept: "application/json"
     };
