@@ -2,15 +2,29 @@
   <div class="register container">
     <form>
       <div class="form-group">
-        <label>Name</label>
+        <label>First Name</label>
         <input
           type="text"
-          v-model="input.name"
+          v-model="input.first_name"
           class="form-control"
-          placeholder="Enter name"
+          placeholder="Enter First Name"
         />
-        <div v-if="errors?.name">
-          <div v-for="(error, id) in errors.name" :key="id">
+        <div v-if="errors?.first_name">
+          <div v-for="(error, id) in errors.first_name" :key="id">
+            <span class="text-danger">{{ error }} </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input
+          type="text"
+          v-model="input.last_name"
+          class="form-control"
+          placeholder="Enter Last Nsame"
+        />
+        <div v-if="errors?.last_name">
+          <div v-for="(error, id) in errors.last_name" :key="id">
             <span class="text-danger">{{ error }} </span>
           </div>
         </div>
@@ -52,31 +66,24 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive } from "vue";
-import { useAuthStore, useErrorStore } from "@/stores";
-import {storeToRefs} from 'pinia'
+import { useUserStore, useAlertsStore } from "@/stores";
+import { storeToRefs } from "pinia";
 
+const input = reactive({
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+});
 
-export default {
-  name: "RegisterView",
-  setup() {
-    const input = reactive({
-      name: "",
-      email: "",
-      password: "",
-    });
+const alertStore = useAlertsStore();
+const { errors } = storeToRefs(alertStore);
 
-    const errorStore = useErrorStore();
-    const { errors } = storeToRefs(errorStore);
-
-    function submitRegister() {
-      errorStore.$reset();
-      const authStore = useAuthStore();
-      authStore.register(input);
-    }
-
-    return { input, submitRegister, errors };
-  },
+const submitRegister = () => {
+  alertStore.resetState();
+  const userStore = useUserStore();
+  userStore.register(input);
 };
 </script>

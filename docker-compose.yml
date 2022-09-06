@@ -64,7 +64,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./backend/mysql:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel_vue

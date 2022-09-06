@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAlertsStore } from "@/stores";
 import authRoutes from '@/router/routes/authRoutes'
 import pageRoutes from '@/router/routes/pageRoutes'
+import adminRoutes from '@/router/routes/adminRoutes'
 
 var routes = []
-routes = routes.concat(authRoutes, pageRoutes)
+routes = routes.concat(authRoutes, pageRoutes, adminRoutes)
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -38,5 +40,25 @@ router.beforeEach((to, from, next) => {
 
     return next();
 });
+
+router.beforeEach(async (to, from) => { // Clear errors on route change
+    const alertStore = useAlertsStore()
+    alertStore.errors = []
+})
+
+router.beforeResolve((to, from, next) => {
+    // If this isn't an initial page load.
+    if (to.name) {
+      // Start the route progress bar.
+      NProgress.start()
+    }
+    next()
+  })
+  
+  router.afterEach((to, from) => {
+    // Complete the animation of the route progress bar.
+    NProgress.done()
+  })
+
 
 export default router

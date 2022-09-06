@@ -4,9 +4,7 @@
     </div>
 </template>
 
-<script>
-
-export default {
-    name: 'HomeView',
-}
+<script setup>
+import router from '@/router/index.js'
+router.push({name: 'login'});
 </script>
