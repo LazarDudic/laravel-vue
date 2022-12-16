@@ -4,7 +4,7 @@
       <li
         v-for="(item, i) in paginationPages.data"
         :class="getCss(item.print)"
-        @click="goToPage(item.page)"
+        @click.prevent="goToPage(item.page)"
       >
         <a class="page-link" href="#">{{ item.print }}</a>
       </li>
@@ -13,43 +13,43 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
-import { useAlertsStore } from '@/stores'
-import { storeToRefs } from 'pinia'
-import { responseIsOK } from '@/helpers/helper.js'
-import { useFilesStore } from '@/stores'
-import FileRepository from '@/repositories/fileRepository'
+import { reactive } from 'vue'
+const props = defineProps(['pages'])
+const emit = defineEmits()
 
-const filesStore = await useFilesStore()
-const { lastPage, currentPage } = storeToRefs(filesStore)
-
+const lastPage = props.pages.lastPage
+const currentPage = props.pages.currentPage
 const paginationPages = reactive({ data: [] })
 
 const getPaginationPages = () => {
+  if (lastPage < 2) {
+    return []
+  }
   let k = 0
   const paginNumPages = []
-  if (currentPage.value - 1 > 0) {
-    paginNumPages[k] = { print: '<', page: currentPage.value - 1 } // ovo je prev button
+
+  if (currentPage - 1 > 0) {
+    paginNumPages[k] = { print: '<', page: currentPage - 1 } // ovo je prev button
   } else {
     paginNumPages[k] = { print: '<', page: null } // ovo je prev button
   }
   k++
 
   const link_limit = 7 // maximum number of links (a little bit inaccurate, but will be ok for now)
-  if (lastPage.value > 1) {
-    for (let index = 1; index <= lastPage.value; index++) {
+  if (lastPage > 1) {
+    for (let index = 1; index <= lastPage; index++) {
       let half_total_links = Math.floor(link_limit / 2)
-      let from = currentPage.value - half_total_links
-      let to = currentPage.value + half_total_links
+      let from = currentPage - half_total_links
+      let to = currentPage + half_total_links
 
-      if (currentPage.value < half_total_links) {
-        to += half_total_links - currentPage.value
+      if (currentPage < half_total_links) {
+        to += half_total_links - currentPage
       }
-      if (lastPage.value - currentPage.value < half_total_links) {
-        from -= half_total_links - (lastPage.value - currentPage.value) - 1
+      if (lastPage - currentPage < half_total_links) {
+        from -= half_total_links - (lastPage - currentPage) - 1
       }
 
-      if (lastPage.value - 1 === currentPage.value) {
+      if (lastPage - 1 === currentPage) {
       }
 
       if (from < index && index < to) {
@@ -61,32 +61,31 @@ const getPaginationPages = () => {
     paginNumPages[k] = { print: 1, page: 1 }
   }
 
-  if (currentPage.value + 1 <= lastPage.value) {
-    paginNumPages[k] = { print: '>', page: currentPage.value + 1 } // ovo je next button
+  if (currentPage + 1 <= lastPage) {
+    paginNumPages[k] = { print: '>', page: currentPage + 1 } // ovo je next button
   } else {
     paginNumPages[k] = { print: '>', page: null } // ovo je next button
   }
   k++
 
-  return paginNumPages;
+  return paginNumPages
 }
 
 paginationPages.data = getPaginationPages()
 
 const goToPage = (page) => {
   if (page === null) return
-  filesStore.goToPage(page)
-  getPaginNumPages()
+  emit('goToPage', page)
 }
 
 const getCss = (page) => {
-  if (currentPage.value === page) {
+  if (currentPage === page) {
     return 'page-item active'
   }
-  if (1 === currentPage.value && page === '<') {
+  if (1 === currentPage && page === '<') {
     return 'page-item disabled'
   }
-  if (currentPage.value === lastPage.value && page === '>') {
+  if (currentPage === lastPage && page === '>') {
     return 'page-item disabled'
   }
   return 'page-item'

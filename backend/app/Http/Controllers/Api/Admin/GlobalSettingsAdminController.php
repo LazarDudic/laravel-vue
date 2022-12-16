@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Services\GlobalSettingsService;
 use App\Http\Resources\GlobalSettingsResource;
 use App\Http\Requests\Admin\GlobalSettingsRequest;
@@ -14,20 +12,26 @@ class GlobalSettingsAdminController extends Controller
 {
     public function __construct(protected GlobalSettingsService $settingsServ){}
 
-    public function get()
+    public function list()
     {
-        return GlobalSettingsResource::make($this->settingsServ->getSettings());
+        $globalSettings = $this->settingsServ->allOrByLangId(request()->header('LanguageId'));
+        $globalSettings->load(['language']);
+        return GlobalSettingsResource::collection($globalSettings);
     }
 
-    public function update(GlobalSettingsRequest $request)
+    public function findById($id)
     {
-        abort_if(Gate::denies('global-settings-update'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        return GlobalSettingsResource::make($this->settingsServ->findByIdOrFail($id));
+    }
 
-        $this->settingsServ->update($request->validated());
+    public function update($id, GlobalSettingsRequest $request)
+    {
+
+        $settings = $this->settingsServ->update($request->validated(), $id);
         return response()->json([
             'success' => 'Settings has been updated.',
-            'data' => GlobalSettingsResource::make($this->settingsServ->getSettings())
+            'data' => GlobalSettingsResource::make($settings)
             ]
-            , 200);
+            , Response::HTTP_OK);
     }
 }

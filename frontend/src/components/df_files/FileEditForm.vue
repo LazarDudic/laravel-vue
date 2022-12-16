@@ -3,7 +3,7 @@
     <div class="modal-body" style="max-width: 500px">
       <img
         v-if="showImage"
-        :src="selectedFile.thumb_path"
+        :src="selectedFile.data?.thumb_path"
         alt=""
         id="df_editImage"
         width="150"
@@ -28,7 +28,7 @@
       </div>
       <div class="form-group">
         <label class="mb-0">Alt:</label>
-        <input type="text" class="form-control" v-model="selectedFile.alt" />
+        <input type="text" class="form-control" v-model="input.alt" />
         <div v-if="errors?.alt">
           <div v-for="(error, id) in errors.alt" :key="id">
             <span class="text-danger">{{ error }} </span>
@@ -43,40 +43,39 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onBeforeMount } from 'vue'
 import { useAlertsStore } from '@/stores'
 import { storeToRefs } from 'pinia'
-import { responseIsOK } from '@/helpers/helper.js'
-import { useFilesStore } from '@/stores'
+import { responseIsOK, getFormData } from '@/helpers/helper.js'
 import FileRepository from '@/repositories/fileRepository'
 
 const emit = defineEmits(['showSection'])
-const props = defineProps({
-  selectedFile: {
-    default: null
-  }
-})
+const props = defineProps(['selectedFileId'])
+const selectedFileId = props.selectedFileId
 const showImage = ref(true)
+const selectedFile = reactive({ data: null })
+
 const initialState = {
   file: '',
-  name: props.selectedFile.name,
-  alt: props.selectedFile.alt
+  name: '',
+  alt: ''
 }
 const input = reactive({ ...initialState })
+onBeforeMount(async () => {
+  selectedFile.data = await FileRepository.findById(selectedFileId)
+  input.name = selectedFile.data.name
+  input.alt = selectedFile.data.alt
+})
+
 const alertStore = useAlertsStore()
 const { errors } = storeToRefs(alertStore)
-const filesStore = useFilesStore()
 const formData = new FormData()
 
 const updateFile = async () => {
-  alertStore.resetState()
-  Object.keys(input).forEach((el, index) => {
-    formData.append(el, input[el])
-  })
-  const res = await FileRepository.update(props.selectedFile.id, formData)
+  const formData = getFormData(input)
+  const res = await FileRepository.update(selectedFileId, formData)
   if (responseIsOK(res)) {
-    filesStore.getFiles(true)
-    emit('showSection')
+    emit('showSection', 'default', true)
   }
 }
 

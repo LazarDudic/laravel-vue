@@ -1,43 +1,25 @@
 <template>
-  <div class="container">
-    <div v-if="errors?.global">
-      <span class="text-danger">{{ errors.global }} </span>
-    </div>
-    <form>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input
-          type="email"
-          v-model="input.email"
-          class="form-control"
-          id="exampleInputEmail1"
-          aria-describedby="emailHelp"
-          placeholder="Enter email"
-        />
-        <div v-if="errors?.email">
-          <div v-for="(error, id) in errors.email" :key="id">
-            <span class="text-danger">{{ error }} </span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input
-          type="password"
-          v-model="input.password"
-          class="form-control"
-          id="exampleInputPassword1"
-          placeholder="Password"
-        />
-        <div v-if="errors?.password">
-          <div v-for="(error, id) in errors.password" :key="id">
-            <span class="text-danger">{{ error }} </span>
-          </div>
-        </div>
-      </div>
-      <button type="button" @click="submitLogin" class="btn btn-primary">
-        Submit
-      </button>
+  <div class="container card">
+    <form id="df-form">   
+        <Input
+            label="Email"
+            name="email"
+            type="email"
+            @update:email="(newValue) => (input.email = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.email" />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            @update:password="(newValue) => (input.password = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.password" />
+
+        <SubmitButton @formSubmited="formSubmited" name="Login" />
     </form>
   </div>
 </template>
@@ -46,6 +28,7 @@
 import { reactive } from "vue";
 import { useUserStore, useAlertsStore } from "@/stores";
 import { storeToRefs } from "pinia";
+import {Input, InputError, SubmitButton} from '@/components/form'
 
 const input = reactive({
   email: "",
@@ -55,8 +38,7 @@ const input = reactive({
 const alertStore = useAlertsStore();
 const { errors } = storeToRefs(alertStore);
 
-const submitLogin = () => {
-  alertStore.resetState();
+const formSubmited = () => {
   const userStore = useUserStore();
   userStore.login(input);
 };

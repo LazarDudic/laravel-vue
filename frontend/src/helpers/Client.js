@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { useAlertsStore, useLoadingStore } from '@/stores'
+import { useAlertsStore, useLoadingStore, useLanguageStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 
 const baseURL = process.env.VUE_APP_API_URL
 const Client = axios.create({ baseURL })
@@ -12,7 +13,6 @@ Client.interceptors.response.use(
     }
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(false)
-    NProgress.done()
     return response
   },
   (error) => {
@@ -20,7 +20,6 @@ Client.interceptors.response.use(
     alertStore.handleErrors(error.response)
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(false)
-    NProgress.done()
   },
   (config) => {
     NProgress.start()
@@ -29,13 +28,17 @@ Client.interceptors.response.use(
 )
 
 Client.interceptors.request.use((config) => {
+  const loadingStore = useLoadingStore()
+  loadingStore.setLoading(true)
+  const { selectedLanguage } = storeToRefs(useLanguageStore())
+  const langID = selectedLanguage.value ? selectedLanguage.value.id : '';
   config.headers.common = {
     Authorization: `${localStorage.getItem('auth_token')}`,
     'Content-Type': 'application/json',
-    Accept: 'application/json'
+    Accept: 'application/json',
+    LanguageId: langID
   }
-  const loadingStore = useLoadingStore()
-  loadingStore.setLoading(true)
+  // config.params = {...config.params, my_variable: 'value'}
   return config
 })
 

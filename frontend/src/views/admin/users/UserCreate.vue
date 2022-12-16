@@ -1,123 +1,139 @@
 <template>
-  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div class="chartjs-size-monitor">
-      <div class="chartjs-size-monitor-expand"><div class=""></div></div>
-      <div class="chartjs-size-monitor-shrink"><div class=""></div></div>
+  <div id="df-main">
+    <div class="page-path">
+      <router-link to="/">Home</router-link
+      ><i class="fas fa-chevron-right"></i>
+      <router-link :to="{ name: 'admin-users-list' }">Users</router-link
+      ><i class="fas fa-chevron-right"></i>
+      <a href="#">
+        <span>Create</span>
+      </a>
     </div>
-    <div
-      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-    >
-      <h1 class="h2">User Create</h1>
-    </div>
-    <div class="register container">
-      <form>
-        <div class="form-group">
-          <label>Role</label>
-          <select v-model="input.role_id">
-            <option v-for="role in allRoles.data" :key="role.id" :value="role.id">{{role.name}}</option>
-          </select>
-          <div v-if="errors?.role_id">
-            <div v-for="(error, id) in errors.role_id" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            v-model="input.first_name"
-            class="form-control"
-            placeholder="Enter First Name"
+    <h2 class="page-title">User Create</h2>
+    <div class="page-content">
+      <div class="content-header">
+        <h2 class="content-title">User Create</h2>
+        <p class="content-description">description user create</p>
+        <i @click="emit('toggleBody')" class="close-content-body fas fa-chevron-down"></i>
+      </div>
+      <hr />
+      <div class="content-body">
+        <form id="df-form">
+          <Select
+            v-if="allRoles.data.length"
+            label="Role"
+            name="role_id"
+            :selectValues="allRoles.data"
+            @update:role_id="(newValue) => (input.role_id = newValue)"
+            :required="true"
           />
-          <div v-if="errors?.first_name">
-            <div v-for="(error, id) in errors.first_name" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            v-model="input.last_name"
-            class="form-control"
-            placeholder="Enter Last Nsame"
-          />
-          <div v-if="errors?.last_name">
-            <div v-for="(error, id) in errors.last_name" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Email address</label>
-          <input
-            type="email"
-            v-model="input.email"
-            class="form-control"
-            placeholder="Enter email"
-          />
-          <div v-if="errors?.email">
-            <div v-for="(error, id) in errors.email" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input
-            type="password"
-            v-model="input.password"
-            class="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
-          />
-          <div v-if="errors?.password">
-            <div v-for="(error, id) in errors.password" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
+          <InputError :errors="errors?.role_id" />
 
-        <button type="button" @click="submitCreateUser" class="btn btn-primary">
-          Submit
-        </button>
-      </form>
+          <Input
+            label="First Name"
+            name="first_name"
+            @update:first_name="(newValue) => (input.first_name = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.first_name" />
+
+          <Input
+            label="Last Name"
+            name="last_name"
+            @update:last_name="(newValue) => (input.last_name = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.last_name" />
+
+          <Input
+            label="Country"
+            name="country"
+            @update:country="(newValue) => (input.country = newValue)"
+          />
+          <InputError :errors="errors?.country" />
+
+          <Input
+            label="City"
+            name="city"
+            @update:city="(newValue) => (input.city = newValue)"
+          />
+          <InputError :errors="errors?.city" />
+
+          <Input
+            label="Address"
+            name="address"
+            @update:address="(newValue) => (input.address = newValue)"
+          />
+          <InputError :errors="errors?.address" />
+
+          <Input
+            label="Phone"
+            name="phone"
+            @update:phone="(newValue) => (input.phone = newValue)"
+          />
+          <InputError :errors="errors?.phone" />
+
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            @update:email="(newValue) => (input.email = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.email" />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            @update:password="(newValue) => (input.password = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.password" />
+
+          <div class="d-flex">
+            <CancelButton redirect="admin-users-list" />
+            <SubmitButton @formSubmited="formSubmited" name="Create" />
+          </div>
+        </form>
+      </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup>
 import { reactive, onBeforeMount, ref } from 'vue'
-import { useAlertsStore } from '@/stores'
 import { storeToRefs } from 'pinia'
+import { useAlertsStore } from '@/stores'
+import {Input, Select, InputError, SubmitButton, CancelButton} from '@/components/form'
 import UserRepository from '@/repositories/userRepository'
 import RoleRepository from '@/repositories/roleRepository'
-import { responseIsOK } from '@/helpers/helper.js'
+import { responseIsOK, getFormData } from '@/helpers/helper.js'
 import router from '@/router/index.js'
+const emit = defineEmits()
 
 const initialState = {
   first_name: '',
   last_name: '',
   email: '',
   password: '',
-  role_id: ''  
+  role_id: ''
 }
 
 const input = reactive({ ...initialState })
 
-const allRoles = reactive({data:[]})
+const allRoles = reactive({ data: [] })
 onBeforeMount(async () => {
-    allRoles.data =  ref(await RoleRepository.all())
+  allRoles.data = ref(await RoleRepository.all())
 })
 
 const alertStore = useAlertsStore()
 const { errors } = storeToRefs(alertStore)
 
-const submitCreateUser = async () => {
+const formSubmited = async () => {
   alertStore.resetState()
-  const res = await UserRepository.store(input)
+  const formData = getFormData(input)
+  const res = await UserRepository.store(formData)
   if (responseIsOK(res)) {
     Object.assign(input, initialState)
     router.push({ name: 'admin-users-list' })

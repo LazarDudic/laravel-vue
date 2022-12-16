@@ -1,11 +1,14 @@
 import Client from '@/helpers/Client.js'
 
-const resource = '/settings'
+const resource = '/global-settings'
 export default {
-  async get() {
-    return await Client.get(`${resource}/get`).then((r) => r.data.data)
+  async findById(settingsId) {
+    return await Client.get(`${resource}/${settingsId}`).then((r) => r.data.data)
   },
-  update(payload) {
-    return Client.post(`${resource}/update`, payload)
+  async all() {
+    return await Client.get(`${resource}/list`).then((r) => r.data.data)
+  },
+  update(settingsId, payload) {
+    return Client.post(`${resource}/update/${settingsId}`, payload)
   }
 }

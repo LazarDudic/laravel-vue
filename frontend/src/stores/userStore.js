@@ -5,19 +5,17 @@ import AuthRepository from '@/repositories/authRepository'
 import { responseIsOK } from '@/helpers/helper.js'
 
 export const useUserStore = defineStore('auth', () => {
-  const user = localStorage.getItem('auth_user')
-    ? JSON.parse(localStorage.getItem('auth_user'))
-    : []
+  var user = [];
+  if(typeof localStorage.getItem('auth_user') !== 'undefined') {
+    user = JSON.parse(localStorage.getItem('auth_user'))
+  } 
 
   const authUser = ref(user)
 
   async function getAuthUser() {
     authUser.value = await AuthRepository.get()
-    localStorage.setItem('auth_user', JSON.stringify(authUser.value))
   }
-
-  getAuthUser()
-
+  
   function isAuth() {
     return Boolean(authUser.value?.id)
   }
@@ -47,10 +45,7 @@ export const useUserStore = defineStore('auth', () => {
     localStorage.setItem('auth_token', data.auth_token)
     localStorage.setItem('auth_user', JSON.stringify(data.user))
   }
-  function can(permission) {
-    return Boolean(authUser.value?.can?.includes(permission))
-  }
 
-  return { authUser, isAuth, login, register, logout, can }
+  return { authUser, isAuth, login, register, logout }
 })
 

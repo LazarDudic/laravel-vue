@@ -25,7 +25,6 @@ export const useAlertsStore = defineStore('alerts', () => {
     } else if (error.status === 404) {
       // not found
       // router.push({ name: '404' })
-
       errors.value = { global: '404. Data not found!' }
     } else {
       // global deal with other errors
@@ -39,6 +38,7 @@ export const useAlertsStore = defineStore('alerts', () => {
   }
 
   function setSuccessMessage(successMsg) {
+    errors.value = []
     success.value = successMsg
   }
 
@@ -46,18 +46,24 @@ export const useAlertsStore = defineStore('alerts', () => {
     errors.value = { global: errorMsg }
   }
 
-  function resetState(successMsg) {
+  function resetState() {
     success.value = null
     errors.value = []
   }
 
   var timeoutId = null
-  watch([success], () => {
+  watch([success, errors], () => {
     clearTimeout(timeoutId)
     if (success.value) {
       timeoutId = setTimeout(() => {
         success.value = null
-      }, 5000)
+      }, 6000)
+    }
+
+    if (errors.value?.global) {
+      timeoutId = setTimeout(() => {
+        errors.value = null
+      }, 12000)
     }
   })
 

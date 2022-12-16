@@ -18,7 +18,8 @@ class RoleSeeder extends Seeder
         $role = \App\Models\Role::create([
             'name' => 'admin',
         ]);
-
-        $role->permissions()->attach(Permission::all()->pluck('id'));
+        \App\Models\Role::create([
+            'name' => 'user',
+        ]);
     }
 }

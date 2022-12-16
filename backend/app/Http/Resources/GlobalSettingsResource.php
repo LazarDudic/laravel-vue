@@ -15,6 +15,7 @@ class GlobalSettingsResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'sitename' => $this->sitename,
             'facebook' => $this->facebook,
             'twitter' => $this->twitter,
@@ -37,6 +38,8 @@ class GlobalSettingsResource extends JsonResource
             'copyright' => $this->copyright,
             'footer_text' => $this->footer_text,
             'default_social_image_id' => $this->default_social_image_id,
+            'language' => $this->whenLoaded('language', LanguageResource::make($this->language)),
+            'lang_id' => $this->lang_id,
         ];
     }
 }

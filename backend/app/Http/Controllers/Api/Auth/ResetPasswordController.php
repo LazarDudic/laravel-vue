@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Exceptions\ClientErrorException;
 use Illuminate\Support\Facades\Password;
@@ -27,7 +28,7 @@ class ResetPasswordController extends Controller
 
         $this->validateStatus($status);
 
-        return response()->json(['success' => 'Password has been reset successfully.'], 200);
+        return response()->json(['success' => 'Password has been reset successfully.'], Response::HTTP_OK);
     }
 
     public function validateStatus($status)

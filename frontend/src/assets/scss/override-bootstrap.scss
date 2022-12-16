@@ -1,0 +1,21 @@
+$primary: #0088cc;
+$danger: #ed2d2d;
+$success: #0fd041;
+$warning: #ffc002;
+$info: #5da8ce;
+$secondary: #c7c7c7;
+$font-size-base: 1.4rem;
+$spacer: 1.6rem;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+);
+
+$badge-padding-y: .6rem;
+$badge-padding-x: 1.6rem;
+
+@import "../../../node_modules/bootstrap/scss/bootstrap"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Services\UserService;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class AuthenticatedSessionController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Invalid login credentials.'
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $this->userSev->findByField('email', $request->email);
@@ -34,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         if(Auth::check()) {
             Auth::user()->token()->revoke();
         }
-        return response()->json(['success' => 'success'], 200);
+        return response()->json([], Response::HTTP_OK);
     }
 
 }

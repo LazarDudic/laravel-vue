@@ -7,16 +7,17 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
 
     async function getSettings(refresh = false) {
         if(!Object.keys(globalSettings.value).length || refresh) {
-            globalSettings.value = await GlobalSettingsRepository.get()
+            globalSettings.value = await GlobalSettingsRepository.findById(1)
         }
+        return globalSettings.value
+    }
+
+    async function setSettings(id) {
+        globalSettings.value = await GlobalSettingsRepository.findById(id)
         return globalSettings.value
     }
 
     getSettings()
 
-    async function update (input) {
-        globalSettings.value = await GlobalSettingsRepository.update(input).then((r) => r.data.data)
-    }
-
-  return { globalSettings, getSettings, update }
+  return { globalSettings, getSettings }
 })

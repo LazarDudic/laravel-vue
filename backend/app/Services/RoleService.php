@@ -11,23 +11,13 @@ class RoleService extends AbstractService
 
     public function create($data)
     {
-        $role = $this->repository::create($data);
-        if(!empty($data['permissions'])) {
-            $role->permissions()->attach($data['permissions']);
-        }
-        return $role;
+        return $this->repository::create($data);
     }
 
     public function update($data, $roleId)
     {
         $role = $this->findByIdOrFail($roleId);
-        $role = $this->repository::update($data, $role);
-        if(!empty($data['permissions'])) {
-            $role->permissions()->sync($data['permissions']);
-        } else {
-            $role->permissions()->detach();
-        }
-        return $role;
+        return $this->repository::update($data, $role);
     }
 
     public function delete($roleId)

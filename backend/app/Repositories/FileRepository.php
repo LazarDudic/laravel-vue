@@ -24,7 +24,7 @@ class FileRepository extends AbstractRepository
             $query->where('name', 'LIKE', '%' . $data['search'] . '%');
         }
 
-        return $query->paginate(1);
+        return $query->paginate($data['paginate'] ?? 12);
     }
 
     static public function updateImage($data, File $file)

@@ -14,10 +14,6 @@ class FileService extends AbstractService
 {
     protected $repository = FileRepository::class;
 
-    public function paginate($paginate = 15, $data = [])
-    {
-        return FileRepository::paginate($paginate, $data);
-    }
     public function get($imageID)
     {
         $image = FileRepository::findById($imageID);

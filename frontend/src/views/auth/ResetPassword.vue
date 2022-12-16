@@ -1,55 +1,34 @@
 <template>
-  <div class="container">
-    <div v-if="success">
-      <span class="text-success">{{ success }}</span>
-    </div>
-    <div v-if="errors?.global">
-      <span class="text-danger">{{ errors.global }} </span>
-    </div>
-    <form>
-      <div v-if="errors?.token">
-        <div v-for="(error, id) in errors.token" :key="id">
-          <span class="text-danger">{{ error }} </span>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" v-model="input.email" class="form-control" />
-        <div v-if="errors?.email">
-          <div v-for="(error, id) in errors.email" :key="id">
-            <span class="text-danger">{{ error }} </span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">New Password</label>
-        <input type="password" v-model="input.password" class="form-control" />
-        <div v-if="errors?.password">
-          <div v-for="(error, id) in errors.password" :key="id">
-            <span class="text-danger">{{ error }} </span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password Confirm</label>
-        <input
-          type="password"
-          v-model="input.password_confirmation"
-          class="form-control"
-        />
-        <div v-if="errors?.password_confirmation">
-          <div v-for="(error, id) in errors.password_confirmation" :key="id">
-            <span class="text-danger">{{ error }} </span>
-          </div>
-        </div>
-      </div>
-      <button
-        type="button"
-        @click="submitRessetPassword"
-        class="btn btn-primary"
-      >
-        Submit
-      </button>
+  <div class="container card">
+    <form id="df-form">   
+        <Input
+            label="Email"
+            name="email"
+            type="email"
+            @update:email="(newValue) => (input.email = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.email" />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            @update:password="(newValue) => (input.password = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.password" />
+
+          <Input
+        label="Confirm Password"
+        name="password_confirmation"
+        type="password"
+        @update:password_confirmation="(newValue) => (input.password_confirmation = newValue)"
+        :required="true"
+      />
+      <InputError :errors="errors?.password_confirm" />
+
+        <SubmitButton @formSubmited="formSubmited" name="Reset" />
     </form>
   </div>
 </template>
@@ -61,9 +40,9 @@ import { storeToRefs } from "pinia";
 import AuthRepository from "@/repositories/authRepository";
 import { useRoute } from "vue-router";
 import { responseIsOK } from "@/helpers/helper.js";
+import { Input, InputError, SubmitButton } from '@/components/form'
 
 const route = useRoute();
-
 const initialState = {
   token: route.query.token,
   password: "",
@@ -76,9 +55,7 @@ const input = reactive({ ...initialState });
 const alertStore = useAlertsStore();
 const { errors, success } = storeToRefs(alertStore);
 
-const submitRessetPassword = async () => {
-  alertStore.resetState();
-  const userStore = useUserStore();
+const formSubmited = async () => {
   const res = await AuthRepository.resetPassword(input);
 
   if (responseIsOK(res)) {

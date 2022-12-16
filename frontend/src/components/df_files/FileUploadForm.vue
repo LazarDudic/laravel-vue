@@ -48,17 +48,14 @@ import { useAlertsStore } from '@/stores'
 import FileRepository from '@/repositories/fileRepository'
 import { storeToRefs } from 'pinia'
 import { responseIsOK } from '@/helpers/helper.js'
-import { useFilesStore } from '@/stores'
 
 const emit = defineEmits(['showSection'])
 const initialState = { file: '', name: '', alt: '' }
 const input = reactive({ ...initialState })
 const alertStore = useAlertsStore()
 const { errors } = storeToRefs(alertStore)
-const filesStore = useFilesStore()
 
 const uploadFile = async () => {
-  alertStore.resetState()
   const formData = new FormData()
   Object.keys(input).forEach((el, index) => {
     formData.append(el, input[el])
@@ -66,7 +63,6 @@ const uploadFile = async () => {
   const res = await FileRepository.store(formData)
 
   if (responseIsOK(res)) {
-    filesStore.getFiles(true)
     emit('showSection')
   }
 }

@@ -23,7 +23,6 @@ class GlobalSettingsRequest extends FormRequest
      */
     public function rules()
     {
-        dd($this->all());
         return [
             'facebook' => ['string', 'max:190', 'nullable'],
             'twitter' => ['string', 'max:190', 'nullable'],
@@ -44,7 +43,7 @@ class GlobalSettingsRequest extends FormRequest
             'status_message' => ['string', 'nullable', 'max:2047'],
             'copyright' => ['string', 'nullable'],
             'footer_text' => ['string', 'nullable'],
-            'default_social_image_id' => ['integer', 'nullable'],
+            'default_social_image_id' => ['nullable', 'exists:files,id'],
         ];
     }
 }

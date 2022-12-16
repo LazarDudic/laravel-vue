@@ -1,103 +1,112 @@
 <template>
-  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div class="chartjs-size-monitor">
-      <div class="chartjs-size-monitor-expand"><div class=""></div></div>
-      <div class="chartjs-size-monitor-shrink"><div class=""></div></div>
+  <div id="df-main">
+    <div class="page-path">
+      <router-link to="/">Home</router-link
+      ><i class="fas fa-chevron-right"></i>
+      <router-link :to="{ name: 'admin-users-list' }">Users</router-link
+      ><i class="fas fa-chevron-right"></i>
+      <a href="#">
+        <span>Edit</span>
+      </a>
     </div>
-    <div
-      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-    >
-      <h1 class="h2">User Edit</h1>
-    </div>
-    <div class="register container">
-      <form>
-        <div class="form-group">
-          <label>Role</label>
-          <select v-model="input.role_id">
-            <option v-for="role in roles.value" :key="role.id" :value="role.id">
-              {{ role.name }}
-            </option>
-          </select>
-          <div v-if="errors?.role_id">
-            <div v-for="(error, id) in errors.role_id" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            v-model="input.first_name"
-            class="form-control"
-            placeholder="Enter First Name"
+    <h2 class="page-title">User Edit</h2>
+    <div class="page-content">
+      <div class="content-header">
+        <h2 class="content-title">User Edit</h2>
+        <p class="content-description">description user edit</p>
+        <i @click="emit('toggleBody')" class="close-content-body fas fa-chevron-down"></i>
+
+      </div>
+      <hr />
+      <div class="content-body">
+        <form v-if="Object.entries(input).length"  id="df-form">
+          <Select
+            v-if="allRoles.data.length"
+            label="Role"
+            name="role_id"
+            :selectValues="allRoles.data"
+            :value="input.role_id"
+            @update:role_id="(newValue) => (input.role_id = newValue)"
+            :required="true"
           />
-          <div v-if="errors?.first_name">
-            <div v-for="(error, id) in errors.first_name" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            v-model="input.last_name"
-            class="form-control"
-            placeholder="Enter Last Nsame"
+          <InputError :errors="errors?.role_id" />
+
+          <Input
+            label="First Name"
+            name="first_name"
+            :value="input.first_name"
+            @update:first_name="(newValue) => (input.first_name = newValue)"
+            :required="true"
           />
-          <div v-if="errors?.last_name">
-            <div v-for="(error, id) in errors.last_name" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Email address</label>
-          <input
+          <InputError :errors="errors?.first_name" />
+
+          <Input
+            label="Last Name"
+            name="last_name"
+            :value="input.last_name"
+            @update:last_name="(newValue) => (input.last_name = newValue)"
+            :required="true"
+          />
+          <InputError :errors="errors?.last_name" />
+
+          <Input
+            label="Country"
+            name="country"
+            :value="input.country"
+            @update:country="(newValue) => (input.country = newValue)"
+          />
+          <InputError :errors="errors?.country" />
+
+          <Input
+            label="City"
+            name="city"
+            :value="input.city"
+            @update:city="(newValue) => (input.city = newValue)"
+          />
+          <InputError :errors="errors?.city" />
+
+          <Input
+            label="Address"
+            name="address"
+            :value="input.address"
+            @update:address="(newValue) => (input.address = newValue)"
+          />
+          <InputError :errors="errors?.address" />
+
+          <Input
+            label="Phone"
+            name="phone"
+            :value="input.phone"
+            @update:phone="(newValue) => (input.phone = newValue)"
+          />
+          <InputError :errors="errors?.phone" />
+
+          <Input
+            label="Email"
+            name="email"
             type="email"
-            v-model="input.email"
-            class="form-control"
-            placeholder="Enter email"
+            :value="input.email"
+            @update:email="(newValue) => (input.email = newValue)"
+            :required="true"
           />
-          <div v-if="errors?.email">
-            <div v-for="(error, id) in errors.email" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input
+          <InputError :errors="errors?.email" />
+
+          <Input
+            label="Password"
+            name="password"
             type="password"
-            v-model="input.password"
-            class="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
+            @update:password="(newValue) => (input.password = newValue)"
           />
-          <div v-if="errors?.password">
-            <div v-for="(error, id) in errors.password" :key="id">
-              <span class="text-danger">{{ error }} </span>
-            </div>
+          <InputError :errors="errors?.password" />
+
+          <div class="d-flex">
+            <CancelButton redirect="admin-users-list" />
+            <SubmitButton @formSubmited="formSubmited" name="Update" />
           </div>
-        </div>
-
-        <div class="mt-4">
-          <button
-            type="button"
-            @click="submitUpdateUser"
-            class="btn btn-primary me-3"
-          >
-            Submit
-          </button>
-
-          <button type="button" @click="deleteUser" class="btn btn-danger">
-            Delete
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup>
@@ -105,35 +114,31 @@ import { reactive, onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAlertsStore } from '@/stores'
 import { storeToRefs } from 'pinia'
+import { Input, Select, InputError, SubmitButton, CancelButton } from '@/components/form'
 import UserRepository from '@/repositories/userRepository'
 import RoleRepository from '@/repositories/roleRepository'
 import router from '@/router/index.js'
-import { responseIsOK } from "@/helpers/helper.js";
-
+import { responseIsOK, getFormData } from '@/helpers/helper.js'
+const emit = defineEmits()
 const route = useRoute()
 const input = reactive({})
-const roles = ref([])
+const allRoles = reactive({ data: [] })
+const userId = route.params.id
 
 onBeforeMount(async () => {
-  const user = await UserRepository.findById(route.params.id)
+  const user = await UserRepository.findById(userId)
   Object.assign(input, user)
-  roles.value = ref(await RoleRepository.all())
+  console.log(input)
+  allRoles.data = ref(await RoleRepository.all())
 })
 
 const alertStore = useAlertsStore()
 const { errors } = storeToRefs(alertStore)
 
-const submitUpdateUser = async () => {
+const formSubmited = async () => {
   alertStore.resetState()
-  const res = await UserRepository.update(input, route.params.id)
+  const formData = getFormData(input)
+  const res = await UserRepository.update(formData, userId)
 }
 
-const deleteUser = async () => {
-  if (confirm('Are you sure?')) {
-    const res = await UserRepository.delete(route.params.id)
-    if (responseIsOK(res)) {
-      router.push({ name: 'admin-users-list' })
-    }
-  }
-}
 </script>

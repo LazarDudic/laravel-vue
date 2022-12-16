@@ -41,6 +41,11 @@ abstract class AbstractService
         return $this->repository::findByField($field, $value);
     }
 
+    public function findByFields(array $fields)
+    {
+        return $this->repository::findByFields($fields);
+    }
+
     public function findByIdOrFail($id)
     {
         return $this->repository::findByIdOrFail($id);

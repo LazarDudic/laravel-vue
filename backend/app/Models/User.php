@@ -22,6 +22,11 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'country',
+        'city',
+        'address',
+        'phone',
+        'password_login_available',
     ];
 
     /**
@@ -41,6 +46,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime:d-m-Y H:i',
+        'updated_at' => 'datetime:d-m-Y H:i',
     ];
 
     protected $appends = ['full_name'];
@@ -60,15 +67,5 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role->name === Role::ADMIN_NAME;
-    }
-
-    public function hasPermission($permission)
-    {
-        return $this->role->permissions->contains('name', $permission);
-    }
-
-    public function hasAdminPrivileges()
-    {
-        return $this->isAdmin() || $this->role->permissions->count();
     }
 }

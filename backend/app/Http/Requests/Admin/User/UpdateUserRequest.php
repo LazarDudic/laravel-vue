@@ -30,6 +30,10 @@ class UpdateUserRequest extends FormRequest
             'email' => ['required','string','email','max:255'],
             'password' => ['nullable','string','min:6'],
             'role_id' => ['required','exists:roles,id'],
+            'country' => ['nullable'],
+            'city' => ['nullable'],
+            'address' => ['nullable'],
+            'phone' => ['nullable'],
         ];
     }
 }

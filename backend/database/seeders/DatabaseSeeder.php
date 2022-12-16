@@ -22,10 +22,12 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            PermissionSeeder::class,
+            LanguageSeeder::class,
+            AppSettingsSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
             GlobalSettingsSeeder::class,
+            PageSeeder::class
         ]);
     }
 }

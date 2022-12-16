@@ -1,11 +1,25 @@
 <template>
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+  <div id="df-main">
+    <div class="page-path">
+      <router-link to="/">Home</router-link><i class="fas fa-chevron-right"></i>
+      <a href="#">
+        <span>Dashboard</span>
+      </a>
+    </div>
+    <h2 class="page-title">Dashboard</h2>
+    <div class="page-content">
+      <div class="content-header">
+        <h2 class="content-title">Dashboard</h2>
+        <p class="content-description">Glyphicons</p>
+        <i @click="emit('toggleBody')" class="close-content-body fas fa-chevron-down"></i>
       </div>
-    </main>
+      <hr />
+      <div class="content-body"></div>
+    </div>
+  </div>
 </template>
 
 <script setup>
+const emit = defineEmits()
 
 </script>

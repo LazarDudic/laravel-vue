@@ -24,4 +24,5 @@ pnpm-debug.log*
 *.sw?
 
 Dockerfile
+.dockerignore
 .prettierrc

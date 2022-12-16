@@ -44,6 +44,11 @@ abstract class AbstractRepository
         return static::$model::where($field, $value)->first();
     }
 
+    public static function findByFields(array $fields)
+    {
+        return static::$model::where($fields)->first();
+    }
+
     public static function findByIdOrFail($id)
     {
         return static::$model::findOrFail($id);

@@ -6,8 +6,8 @@ export default {
     return await Client.get(`${resource}/${fileId}`).then((r) => r.data.data)
   },
   async get(filters) {
-    const { page , order, search} = filters
-    return await Client.get(`${resource}/list?page=${page}&sort=${order}&search=${search}`)
+    const { page , order, search, paginate} = filters
+    return await Client.get(`${resource}/list?page=${page}&sort=${order}&search=${search}&paginate=${paginate}`)
         .then((r) => r.data)
   },
   store(payload) {

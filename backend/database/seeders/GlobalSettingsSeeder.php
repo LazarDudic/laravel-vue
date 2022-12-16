@@ -16,7 +16,15 @@ class GlobalSettingsSeeder extends Seeder
     public function run()
     {
         GlobalSettings::create([
+            'lang_id' => 1,
+            'lang_group_id' => 1,
             'sitename' => 'DF Template',
+            'email' => 'test@test.com',
+        ]);
+        GlobalSettings::create([
+            'lang_id' => 2,
+            'lang_group_id' => 1,
+            'sitename' => 'DF Template EN',
             'email' => 'test@test.com',
         ]);
     }

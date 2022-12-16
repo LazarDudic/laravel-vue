@@ -30,10 +30,19 @@ class GlobalSettings extends Model
         'copyright',
         'footer_text',
         'default_social_image_id',
+        'lang_id',
+        'lang_group_id',
     ];
 
     public function defaultSocilaImage()
     {
         return $this->belongsTo(File::class, 'default_social_image_id');
     }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'lang_id');
+    }
+
+
 }

@@ -20,13 +20,16 @@ class UserResource extends JsonResource
             'last_name' => $this->last_name,
             'full_name' => $this->full_name,
             'email' => $this->email,
-            $this->mergeWhen($this->hasAdminPrivileges(), [
+            'country' => $this->country,
+            'city' => $this->city,
+            'address' => $this->address,
+            'phone' => $this->phone,
+            // $this->mergeWhen($this->isAdmin(), [
                 'role_id' => $this->role_id,
                 'is_admin' => true,
-                'can' => $this->role->permissions()->pluck('name')
-            ]),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // ]),
+            'created_at' => $this->created_at->format('d-m-Y H:i'),
+            'updated_at' => $this->updated_at->format('d-m-Y H:i'),
         ];
     }
 }

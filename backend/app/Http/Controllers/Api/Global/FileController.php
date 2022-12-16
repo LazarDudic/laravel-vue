@@ -16,16 +16,12 @@ class FileController extends Controller
     public function list(Request $request)
     {
         $files = $this->fileServ->searchFiles($request->all());
-        // $data['last_page'] = $files->lastPage();
-        // $data['files'] = [];
-        // foreach ($files as $key => $file) {
-        //     $data['files'][$key]['path'] = $file->getPath();
-        //     $data['files'][$key]['thumb_path'] = $file->getThumbPath();
-        //     $data['files'][$key]['id'] = $file->id;
-        //     $data['files'][$key]['name'] = $file->name;
-        //     $data['files'][$key]['alt'] = $file->alt;
-        // }
         return FileResource::collection($files);
+    }
+
+    public function findById($fileId)
+    {
+        return FileResource::make($this->fileServ->findById($fileId));
     }
 
     public function store(StoreFileRequest $request)
